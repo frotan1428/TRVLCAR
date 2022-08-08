@@ -1,6 +1,15 @@
+import { useEffect } from "react";
 import { StyleSheet, Text, View, StatusBar } from "react-native";
-import { Provider as PaperProvider, DefaultTheme, Button } from "react-native-paper";
+import {
+  Provider as PaperProvider,
+  DefaultTheme,
+  Button,
+} from "react-native-paper";
+import { getVehicles } from "./api/vehicle-service";
+import Main from "./main";
 import TabNavigator from "./screens/navigations/tab-navigator";
+import { StoreProvider, useStore } from "./store";
+import { setVehiclesInStore } from "./store/vehicles/vehiclesActions";
 import colors from "./utils/constants/colors";
 
 const theme = {
@@ -13,13 +22,14 @@ const theme = {
   },
 };
 
-
 export default function App() {
+
   return (
-    <PaperProvider theme={theme}>
-        <TabNavigator/>
-        <StatusBar style="auto" />
-    </PaperProvider>
+    <StoreProvider>
+      <PaperProvider theme={theme}>
+        <Main/>
+      </PaperProvider>
+    </StoreProvider>
   );
 }
 

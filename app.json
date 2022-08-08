@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "TRVLCAR",
-    "slug": "TRVLCAR",
+    "name": "trvlcar-app",
+    "slug": "trvlcar-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

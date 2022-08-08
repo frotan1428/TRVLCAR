@@ -8,9 +8,15 @@ const Stack = createNativeStackNavigator();
 const HomeStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="cars" component={CarsScreen} />
-      <Stack.Screen name="car-details" component={CarDetailsScreen} />
-      <Stack.Screen name="reservation-result" component={ReservationResultScreen} />
+      <Stack.Screen name="cars" component={CarsScreen} options={{
+        title: "TRVL Cars"
+      }} />
+      <Stack.Screen name="car-details" component={CarDetailsScreen}  options={{
+        title: "Car Details"
+      }} />
+      <Stack.Screen name="reservation-result" component={ReservationResultScreen}  options={{
+        title: "Result"
+      }} />
     </Stack.Navigator>
   );
 }

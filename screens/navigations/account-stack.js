@@ -10,13 +10,25 @@ const Stack = createNativeStackNavigator();
 
 const AccountStack = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="profile" component={ProfileScreen} />
-      <Stack.Screen name="change-password" component={ChangePasswordScreen} />
-      <Stack.Screen name="reservations" component={ReservationsScreen} />
-      <Stack.Screen name="reservation-details" component={ReservationDetailsScreen} />
-      <Stack.Screen name="login" component={LoginScreen} />
-      <Stack.Screen name="register" component={RegisterScreen} />
+    <Stack.Navigator initialRouteName="login">
+      <Stack.Screen name="profile" component={ProfileScreen}  options={{
+        title: "Profile"
+      }}/>
+      <Stack.Screen name="change-password" component={ChangePasswordScreen}  options={{
+        title: "Change Password"
+      }}/>
+      <Stack.Screen name="reservations" component={ReservationsScreen}  options={{
+        title: "Reservations"
+      }}/>
+      <Stack.Screen name="reservation-details" component={ReservationDetailsScreen}  options={{
+        title: "Details"
+      }}/>
+      <Stack.Screen name="login" component={LoginScreen}  options={{
+        title: "Login"
+      }}/>
+      <Stack.Screen name="register" component={RegisterScreen}  options={{
+        title: "Register"
+      }}/>
     </Stack.Navigator>
   );
 }
