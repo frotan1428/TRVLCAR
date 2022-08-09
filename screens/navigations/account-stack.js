@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Header from '../../components/common/header';
 import ChangePasswordScreen from '../change-password-screen';
 import LoginScreen from '../login-screen';
 import ProfileScreen from '../profile-screen';
@@ -10,7 +11,9 @@ const Stack = createNativeStackNavigator();
 
 const AccountStack = () => {
   return (
-    <Stack.Navigator initialRouteName="login">
+    <Stack.Navigator initialRouteName="login" screenOptions={{
+      header: (props)=> <Header {...props}/>
+    }}>
       <Stack.Screen name="profile" component={ProfileScreen}  options={{
         title: "Profile"
       }}/>

@@ -1,16 +1,38 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
 import { useStore } from "../store";
 import Car from "../components/home/car";
+import { Button, Searchbar } from "react-native-paper";
 
 const CarsScreen = () => {
-  const { vehiclesState } = useStore();
-  const {vehicles} = vehiclesState;
+  const { vehiclesState, searchBarState } = useStore();
+  const { vehicles } = vehiclesState;
+  const { isSearchBarVisible } = searchBarState;
+  const [filteredList, setFilteredList] = useState(vehicles);
+
+
+  console.log(filteredList);
+
+  const handleSearch = (text) => {
+    console.log("TEST",text);
+    const arr = text
+      ? vehicles.filter((item) =>
+          item.model.toLowerCase().includes(text.toLowerCase())
+        )
+      : vehicles;
+    setFilteredList(arr);
+  };
 
   return (
     <View style={styles.container}>
-      {vehicles.map(item=> <Car data={item} key={item.id}/>)}
-      
+      {isSearchBarVisible && (
+        <Searchbar placeholder="Search" onChangeText={handleSearch} />
+      )}
+      <FlatList
+        data={filteredList}
+        renderItem={(dataItem) => <Car data={dataItem.item} />}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 };
@@ -18,7 +40,7 @@ const CarsScreen = () => {
 export default CarsScreen;
 
 const styles = StyleSheet.create({
-  container:{
-    padding:20
-  }
+  container: {
+    padding: 20,
+  },
 });

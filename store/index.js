@@ -1,4 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
+import { searchBarInitialState } from "./search-bar/searchBarInitialState";
+import { searchBarReducer } from "./search-bar/searchBarReducer";
 import { vehiclesInitalState } from "./vehicles/vehiclesInitialState";
 import { vehiclesReducer } from "./vehicles/vehiclesReducer";
 
@@ -14,7 +16,9 @@ export const StoreProvider = ({ children }) => {
     vehiclesInitalState
   );
 
-  const providerValues = { vehiclesState, dispatchVehicles };
+  const [searchBarState, dispatchSearchBar] = useReducer(searchBarReducer, searchBarInitialState);
+
+  const providerValues = { vehiclesState, dispatchVehicles, searchBarState, dispatchSearchBar };
 
   return <Store.Provider value={providerValues}>{children}</Store.Provider>;
 };

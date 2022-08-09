@@ -24,10 +24,9 @@ const Main = () => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
         <TabNavigator />
-        <StatusBar style="auto" />
-    </SafeAreaView>
+    </View>
   )
 }
 
