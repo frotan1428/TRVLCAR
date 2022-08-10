@@ -14,7 +14,6 @@ const CarsScreen = () => {
   console.log(filteredList);
 
   const handleSearch = (text) => {
-    console.log("TEST",text);
     const arr = text
       ? vehicles.filter((item) =>
           item.model.toLowerCase().includes(text.toLowerCase())
