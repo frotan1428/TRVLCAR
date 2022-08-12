@@ -3,6 +3,7 @@ import React from 'react'
 import CarDetailsCard from '../components/car-details/car-details-card';
 import ReservationForm from '../components/car-details/reservation-form';
 import PaymentForm from '../components/car-details/payment-form';
+import Spacer from '../components/common/spacer';
 
 const CarDetailsScreen = ({route}) => {
   const {carId} = route.params;
@@ -10,6 +11,7 @@ const CarDetailsScreen = ({route}) => {
   return (
     <ScrollView style={styles.container}>
       <CarDetailsCard carId={carId}/>
+      <Spacer/>
       <ReservationForm/>
       <PaymentForm/>
     </ScrollView>

@@ -7,10 +7,19 @@ import {
 import Main from "./main";
 import { StoreProvider, useStore } from "./store";
 import colors from "./utils/constants/colors";
+import "intl";
+import "intl/locale-data/jsonp/en";
+import {
+  enGB,
+  registerTranslation,
+} from 'react-native-paper-dates'
+
+registerTranslation('en-GB', enGB)
+
 
 const theme = {
   ...DefaultTheme,
-  dark: true,
+  dark: false,
   roundness: 30,
   colors: {
     ...DefaultTheme.colors,

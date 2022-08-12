@@ -1,4 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
+import { reservationInitialState } from "./reservation/reservationInitialState";
+import { reservationReducer } from "./reservation/reservationReducer";
 import { searchBarInitialState } from "./search-bar/searchBarInitialState";
 import { searchBarReducer } from "./search-bar/searchBarReducer";
 import { vehiclesInitalState } from "./vehicles/vehiclesInitialState";
@@ -16,9 +18,23 @@ export const StoreProvider = ({ children }) => {
     vehiclesInitalState
   );
 
-  const [searchBarState, dispatchSearchBar] = useReducer(searchBarReducer, searchBarInitialState);
+  const [searchBarState, dispatchSearchBar] = useReducer(
+    searchBarReducer,
+    searchBarInitialState
+  );
+  const [reservationState, dispatchReservation] = useReducer(
+    reservationReducer,
+    reservationInitialState
+  );
 
-  const providerValues = { vehiclesState, dispatchVehicles, searchBarState, dispatchSearchBar };
+  const providerValues = {
+    vehiclesState,
+    dispatchVehicles,
+    searchBarState,
+    dispatchSearchBar,
+    reservationState,
+    dispatchReservation,
+  };
 
   return <Store.Provider value={providerValues}>{children}</Store.Provider>;
 };
