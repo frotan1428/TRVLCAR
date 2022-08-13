@@ -3,6 +3,8 @@ import { reservationInitialState } from "./reservation/reservationInitialState";
 import { reservationReducer } from "./reservation/reservationReducer";
 import { searchBarInitialState } from "./search-bar/searchBarInitialState";
 import { searchBarReducer } from "./search-bar/searchBarReducer";
+import { userInitialState } from "./user/userInitialState";
+import { userReducer } from "./user/userReducer";
 import { vehiclesInitalState } from "./vehicles/vehiclesInitialState";
 import { vehiclesReducer } from "./vehicles/vehiclesReducer";
 
@@ -27,6 +29,8 @@ export const StoreProvider = ({ children }) => {
     reservationInitialState
   );
 
+  const [userState, dispatchUser] = useReducer(userReducer, userInitialState);
+
   const providerValues = {
     vehiclesState,
     dispatchVehicles,
@@ -34,6 +38,8 @@ export const StoreProvider = ({ children }) => {
     dispatchSearchBar,
     reservationState,
     dispatchReservation,
+    userState,
+    dispatchUser,
   };
 
   return <Store.Provider value={providerValues}>{children}</Store.Provider>;

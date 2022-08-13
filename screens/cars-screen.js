@@ -11,8 +11,6 @@ const CarsScreen = () => {
   const [filteredList, setFilteredList] = useState(vehicles);
 
 
-  console.log(filteredList);
-
   const handleSearch = (text) => {
     const arr = text
       ? vehicles.filter((item) =>

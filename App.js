@@ -13,6 +13,7 @@ import {
   enGB,
   registerTranslation,
 } from 'react-native-paper-dates'
+import Toast from 'react-native-toast-message';
 
 registerTranslation('en-GB', enGB)
 
@@ -34,6 +35,7 @@ export default function App() {
     <StoreProvider>
       <PaperProvider theme={theme}>
         <Main />
+        <Toast/>
       </PaperProvider>
     </StoreProvider>
   );

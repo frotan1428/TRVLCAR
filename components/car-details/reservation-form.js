@@ -146,7 +146,6 @@ const ReservationForm = () => {
             visible={isVisiblePickupTime}
             onDismiss={() => setIsVisiblePickupTime(false)}
             onConfirm={(params) => {
-              console.log(params);
               formik.setFieldValue(
                 "pickUpTime",
                 `${params.hours}:${params.minutes}`

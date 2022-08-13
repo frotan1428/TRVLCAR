@@ -1,14 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import ProfileCard from '../components/account/profile-card'
 
 const ProfileScreen = () => {
   return (
-    <View>
-      <Text>ProfileScreen</Text>
-    </View>
+    <ScrollView style={styles.container}>
+      <ProfileCard/>
+      <Text>Profile</Text>
+    </ScrollView>
   )
 }
 
 export default ProfileScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container:{
+    padding:10
+  }
+})

@@ -1,7 +1,6 @@
 import moment from "moment";
 
 const formatDateTime = (date, time) => {
-  console.log(date, time);
   const dateStr = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD"); // Bunun amacı gelen tarihteki saat kısmını silmek
 
   return moment(`${dateStr} ${time}`, "YYYY-MM-DD HH:mm").format(

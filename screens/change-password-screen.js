@@ -1,14 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import ProfileCard from "../components/account/profile-card";
 
 const ChangePasswordScreen = () => {
   return (
-    <View>
-      <Text>ChangePasswordScreen</Text>
-    </View>
-  )
-}
+    <ScrollView style={styles.container}>
+      <ProfileCard />
+      <Text>Change Password</Text>
+    </ScrollView>
+  );
+};
 
-export default ChangePasswordScreen
+export default ChangePasswordScreen;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container:{
+    padding:10
+  }
+})
