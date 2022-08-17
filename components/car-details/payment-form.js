@@ -1,12 +1,31 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
-import { Button, Card, Checkbox, HelperText, TextInput, Title } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Checkbox,
+  HelperText,
+  TextInput,
+  Title,
+} from "react-native-paper";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import colors from "../../utils/constants/colors";
+import { useStore } from "../../store";
+import { MaskedTextInput } from "react-native-mask-text";
+import { formatDateTime } from "../../utils/functions/datetime";
+import { createReservation } from "../../api/reservation-service";
+import { CommonActions, StackActions, useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+import { resetReservationState, setReservationState } from "../../store/reservation/reservationActions";
 
-const PaymentForm = () => {
+const PaymentForm = ({ setActiveScreen }) => {
   const [loading, setLoading] = useState(false);
+  const [placeholder, setPlaceholder] = useState("");
+  const { reservationState, dispatchReservation } = useStore();
+  const { reservation } = reservationState;
+
+  const navigation = useNavigation();
 
   const initialValues = {
     cardNo: "",
@@ -19,8 +38,7 @@ const PaymentForm = () => {
   const validationSchema = Yup.object({
     cardNo: Yup.string().required("Please enter the card number"),
     nameOnCard: Yup.string().required("Please enter the name of card"),
-    expireDate: Yup.string()
-      .required("Please enter the expire date"),
+    expireDate: Yup.string().required("Please enter the expire date"),
     cvc: Yup.number()
       .typeError("Must be number")
       .required("Please enter the cvc"),
@@ -30,8 +48,60 @@ const PaymentForm = () => {
     ),
   });
 
-  const onSubmit =  () => {
-    
+  const onSubmit = async (values) => {
+    try {
+      if (!reservation || Object.keys(reservation).length <= 0)
+        throw "Reservation not found";
+
+      setLoading(true);
+
+      const {
+        carId,
+        pickUpLocation,
+        dropOffLocation,
+        pickUpDate,
+        pickUpTime,
+        dropOffDate,
+        dropOffTime,
+      } = reservation;
+
+      const reservationDto = {
+        carId,
+        pickUpLocation,
+        dropOfLocation: dropOffLocation,
+        pickUpTime: formatDateTime(pickUpDate, pickUpTime),
+        dropOfTime: formatDateTime(dropOffDate, dropOffTime),
+      };
+
+      const resp = await createReservation(reservationDto);
+
+      dispatchReservation(resetReservationState());
+
+      setLoading(false);
+
+      //navigation.navigate("reservation-result");
+
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: 'cars' },
+            { name: 'reservation-result' }
+            
+          ],
+        })
+      );
+
+
+
+    } catch (err) {
+      Toast.show({
+        type: "error",
+        text1: err?.response?.data?.message ?? err,
+      });
+
+      setLoading(false);
+    }
   };
 
   const formik = useFormik({
@@ -45,7 +115,7 @@ const PaymentForm = () => {
       <Card mode="outlined">
         <Card.Content style={styles.priceCard}>
           <Title>Total Price</Title>
-          <Title>$XXXX</Title>
+          <Title>${reservation.price}</Title>
         </Card.Content>
       </Card>
 
@@ -57,6 +127,9 @@ const PaymentForm = () => {
         style={styles.textInput}
         activeUnderlineColor={colors.color3}
         keyboardType="number-pad"
+        render={(props) => (
+          <MaskedTextInput {...props} mask="9999-9999-9999-9999" />
+        )}
       />
 
       <HelperText
@@ -91,6 +164,15 @@ const PaymentForm = () => {
             style={styles.textInput}
             activeUnderlineColor={colors.color3}
             keyboardType="number-pad"
+            render={(props) => (
+              <MaskedTextInput
+                {...props}
+                mask="99/99"
+                onFocus={() => setPlaceholder("MM/YY")}
+                onBlur={() => setPlaceholder("")}
+                placeholder={placeholder}
+              />
+            )}
           />
 
           <HelperText
@@ -109,6 +191,7 @@ const PaymentForm = () => {
             style={styles.textInput}
             activeUnderlineColor={colors.color3}
             keyboardType="number-pad"
+            render={(props) => <MaskedTextInput {...props} mask="999" />}
           />
 
           <HelperText
@@ -137,14 +220,7 @@ const PaymentForm = () => {
       </HelperText>
 
       <View>
-        <Button
-          mode="contained"
-          onPress={() => {}}
-          style={styles.secondaryButton}
-          labelStyle={styles.secondaryButtonLabel}
-        >
-          Return Back
-        </Button>
+        
 
         <Button
           mode="contained"
@@ -155,6 +231,19 @@ const PaymentForm = () => {
         >
           Checkout
         </Button>
+
+        <Button
+          mode="contained"
+          onPress={() => {
+            setActiveScreen("reservation");
+          }}
+          style={styles.secondaryButton}
+          labelStyle={styles.secondaryButtonLabel}
+        >
+          Return Back
+        </Button>
+
+        
       </View>
     </View>
   );
@@ -181,10 +270,9 @@ const styles = StyleSheet.create({
   secondaryButton: {
     marginTop: 30,
     backgroundColor: colors.color6,
-
   },
-  secondaryButtonLabel:{
-    color: "white"
+  secondaryButtonLabel: {
+    color: "white",
   },
   priceCard: {
     alignItems: "center",

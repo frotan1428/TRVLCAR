@@ -9,7 +9,7 @@ import { getUser, login } from "../api/user-service";
 import * as SecureStore from "expo-secure-store";
 import { useStore } from "../store";
 import { loginSuccess } from "../store/user/userActions";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 
 const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
@@ -27,40 +27,40 @@ const LoginScreen = () => {
     password: Yup.string().required("Password is required"),
   });
 
-  const onSubmit = async (values) => { 
+  const onSubmit = async (values) => {
     try {
       setLoading(true);
       const respLogin = await login(values);
       await SecureStore.setItemAsync("token", respLogin.data.token);
 
       const respUser = await getUser();
-
-      dispatchUser(loginSuccess(respUser.data));
-
       setLoading(false);
-      
+      dispatchUser(loginSuccess(respUser.data));
+      // Bu satırdan sonra state güncellemesi olursa hata olur.
+      // Çünkü bu satırdan sonra login ekranından, profile ekranına geçiliyor
+      // Geçtikten sonra yapılacak state güncellemeleri hataya sebep oluyor
+
+      //setLoading(false);
 
       Toast.show({
-        type: 'success',
-        text1: 'Loged in successfully',
+        type: "success",
+        text1: "Loged in successfully",
       });
-
-
     } catch (error) {
       Toast.show({
-        type: 'success',
+        type: "success",
         text1: error.response.data.message,
       });
+      setLoading(false);
     }
+    
+  };
 
-   }
-
-   const formik = useFormik({
+  const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit,
   });
-
 
   return (
     <View style={styles.form}>
@@ -80,7 +80,6 @@ const LoginScreen = () => {
         {formik.errors.email}
       </HelperText>
 
-
       <TextInput
         label="Password"
         onChangeText={formik.handleChange("password")}
@@ -92,7 +91,7 @@ const LoginScreen = () => {
           <TextInput.Icon
             name={isPassSecure ? "eye-off-outline" : "eye-outline"}
             onPress={() => {
-              setIsPassSecure(prev=> !prev);
+              setIsPassSecure((prev) => !prev);
             }}
           />
         }
@@ -104,7 +103,6 @@ const LoginScreen = () => {
       >
         {formik.errors.password}
       </HelperText>
-
 
       <Button
         mode="contained"
@@ -123,7 +121,6 @@ const LoginScreen = () => {
       >
         Click to create a new account
       </Button>
-
     </View>
   );
 };
@@ -163,4 +160,3 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-

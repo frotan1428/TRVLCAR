@@ -8,16 +8,20 @@ import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import moment from "moment";
 import { useStore } from "../../store";
 import { checkDates, formatDateTime } from "../../utils/functions/datetime";
+import Toast from "react-native-toast-message";
+import { isCarAvaliable } from "../../api/reservation-service";
+import { setReservationState } from "../../store/reservation/reservationActions";
 
-const ReservationForm = () => {
+const ReservationForm = ({ carId, setActiveScreen }) => {
   const [loading, setLoading] = useState(false);
   const [isVisiblePickupDate, setIsVisiblePickupDate] = useState(false);
   const [isVisiblePickupTime, setIsVisiblePickupTime] = useState(false);
   const [isVisibleDropoffDate, setIsVisibleDropoffDate] = useState(false);
   const [isVisibleDropoffTime, setIsVisibleDropoffTime] = useState(false);
 
-  const { reservationState, dispatchReservation } = useStore();
+  const { reservationState, dispatchReservation, userState } = useStore();
   const { reservation } = reservationState;
+  const { isUserLogin } = userState;
 
   const initialValues = reservation;
 
@@ -30,18 +34,42 @@ const ReservationForm = () => {
     dropOffTime: Yup.string().required("Required"),
   });
 
-  const onSubmit = (values) => {
-    const { pickUpDate, pickUpTime } = values;
-
+  const onSubmit = async (values) => {
+    const { pickUpDate, pickUpTime, dropOffDate, dropOffTime } = values;
     try {
-      // check is user login?
+      if (!isUserLogin) throw "Please first login";
       // check the dates and times
       if (!checkDates(values))
         throw "Dropoff date time should be later than pickup date time";
 
       // is car avaliable
+      const payload = {
+        carId: carId,
+        dropOffDateTime: formatDateTime(dropOffDate, dropOffTime),
+        pickUpDateTime: formatDateTime(pickUpDate, pickUpTime),
+      };
+
+      setLoading(true);
+      const resp = await isCarAvaliable(payload);
+
+      const { isAvailable, totalPrice } = resp.data;
+
+      if (!isAvailable)
+        throw "The car is not avaliable in these days. Please select another date";
+
+      values.carId = carId;
+      values.price = totalPrice;
+      setLoading(false);
+      dispatchReservation(setReservationState(values));
+      setActiveScreen("payment");
+
       // set reservation state
-    } catch (error) {
+    } catch (err) {
+      setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: err?.response?.data?.message ?? err,
+      });
       
     }
   };
@@ -52,7 +80,18 @@ const ReservationForm = () => {
     onSubmit,
   });
 
-  console.log(formik.isValid);
+  const onDismiss = React.useCallback(() => {
+    setIsVisiblePickupTime(false);
+  }, [isVisiblePickupTime]);
+
+  const onConfirm = React.useCallback(
+    ({ hours, minutes }) => {
+      formik.setFieldValue("pickUpTime", `${hours}:${minutes}`);
+
+      setIsVisiblePickupTime(false);
+    },
+    [isVisiblePickupTime]
+  );
 
   return (
     <View style={styles.container}>
@@ -111,7 +150,7 @@ const ReservationForm = () => {
           </HelperText>
 
           <DatePickerModal
-            locale="en-GB"
+            locale="en"
             mode="single"
             visible={isVisiblePickupDate}
             onDismiss={() => setIsVisiblePickupDate(false)}
@@ -152,12 +191,11 @@ const ReservationForm = () => {
               );
               setIsVisiblePickupTime(false);
             }}
-            hours={23} // default: current hours
-            minutes={0} // default: current minutes
+            hours={11}
+            minutes={15}
             label="Select pick up time" // optional, default 'Select time'
-            uppercase={false} // optional, default is true
             animationType="fade" // optional, default is 'none'
-            locale="en-DB" // optional, default is automically detected by your system
+            locale="en"
           />
         </View>
       </View>
@@ -183,7 +221,7 @@ const ReservationForm = () => {
             {formik.errors.dropOffDate}
           </HelperText>
           <DatePickerModal
-            locale="en-GB"
+            locale="en"
             mode="single"
             visible={isVisibleDropoffDate}
             onDismiss={() => setIsVisibleDropoffDate(false)}
@@ -226,12 +264,11 @@ const ReservationForm = () => {
               );
               setIsVisibleDropoffTime(false);
             }}
-            hours={12} // default: current hours
-            minutes={0} // default: current minutes
+            hours={11} // default: current hours
+            minutes={15} // default: current minutes
             label="Select drop off time" // optional, default 'Select time'
             uppercase={false} // optional, default is true
             animationType="fade" // optional, default is 'none'
-            locale="en-DB" // optional, default is automically detected by your system
           />
         </View>
       </View>
@@ -256,6 +293,7 @@ export default ReservationForm;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 30,
   },
   textInput: {
     borderBottomWidth: 1,

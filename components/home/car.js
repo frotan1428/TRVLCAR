@@ -17,12 +17,12 @@ const Car = ({ data }) => {
   return (
     <TouchableWithoutFeedback onPress={(goDetails)}>
       <Card style={styles.card}>
-        <Card.Cover source={vehicleImage} />
+        <Card.Cover source={vehicleImage} resizeMode="contain" style={{backgroundColor: "white"}} />
         <Card.Content style={styles.content}>
           <View>
             <Title style={styles.title}>{model}</Title>
             <Paragraph style={styles.paragraph}>
-              from ${pricePerHour}/hour{" "}
+              from ${pricePerHour}/hour
             </Paragraph>
           </View>
           <IconButton
@@ -45,9 +45,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    
   },
   card: {
     marginVertical: 20,
+    
   },
   paragraph: {
     color: colors.color3,
@@ -58,4 +60,5 @@ const styles = StyleSheet.create({
   title: {
     overflow: "hidden",
   },
+
 });

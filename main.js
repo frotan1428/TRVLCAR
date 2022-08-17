@@ -5,12 +5,15 @@ import { useStore } from "./store";
 import { getVehicles } from "./api/vehicle-service";
 import { setVehiclesInStore } from "./store/vehicles/vehiclesActions";
 import * as SplashScreen from 'expo-splash-screen';
+import * as SecureStore from "expo-secure-store";
+import { getUser } from "./api/user-service";
+import { loginSuccess } from "./store/user/userActions";
 
 SplashScreen.preventAutoHideAsync();
 
 
 const Main = () => {
-  const { dispatchVehicles } = useStore();
+  const { dispatchVehicles, dispatchUser } = useStore();
   const [appIsReady, setAppIsReady] = useState(false);
 
   const loadData = async () => {
@@ -18,6 +21,15 @@ const Main = () => {
       /*** LOAD VEHICLES ***/
       const respVehicles = await getVehicles();
       dispatchVehicles(setVehiclesInStore(respVehicles.data));
+
+      /*** LOAD USER ***/
+      const token = await SecureStore.getItemAsync("token");
+      if(token){
+        const respUser = await getUser();
+        dispatchUser(loginSuccess(respUser.data));
+      }
+
+
     } catch (error) {
       console.log(error);
     }

@@ -1,11 +1,13 @@
 import { types } from "../types";
 import { reservationInitialState } from "./reservationInitialState";
 
-export const reservationReducer = (action) => {
+export const reservationReducer = (state = reservationInitialState, action) => {
   if (action.type === types.SET_RESERVATION) {
     return {
-      ...reservationInitialState,
+      ...state,
       reservation: action.payload,
+      isReset: false
     };
   }
+  
 };

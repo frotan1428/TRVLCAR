@@ -23,7 +23,7 @@ const CarDetailsCard = ({ carId }) => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.carImage} source={getVehicleImage(vehicle?.image)} />
+      <Image style={styles.carImage} source={getVehicleImage(vehicle?.image)} resizeMode="contain" />
 
       <Card style={styles.card}>
         <Card.Content style={styles.cardContent}>

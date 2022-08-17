@@ -15,3 +15,13 @@ export const register = (user) => {
 export const getUser = async () => {
   return axios.get(`${API_URL}/user`, { headers: await authHeader() });
 };
+
+export const updateUser = async (user) => {
+  return axios.put(`${API_URL}/user`, user, { headers: await authHeader() });
+};
+
+export const updatePassword = async (credentials) => {
+  return axios.patch(`${API_URL}/user/auth`, credentials, {
+    headers: await authHeader(),
+  });
+};

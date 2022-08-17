@@ -212,6 +212,8 @@ const RegisterScreen = () => {
         mode="outlined"
         onPress={() => navigation.navigate("login")}
         style={styles.buttonLogin}
+        loading={loading}
+        disabled={!formik.isValid || loading}
       >
         Click here to login
       </Button>

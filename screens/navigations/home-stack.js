@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Header from '../../components/common/header';
+import { useStore } from '../../store';
 import CarDetailsScreen from '../car-details-screen';
 import CarsScreen from '../cars-screen';
 import ReservationResultScreen from '../reservation-result-screen';

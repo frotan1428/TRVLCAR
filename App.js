@@ -10,13 +10,12 @@ import colors from "./utils/constants/colors";
 import "intl";
 import "intl/locale-data/jsonp/en";
 import {
-  enGB,
+  en,
   registerTranslation,
 } from 'react-native-paper-dates'
 import Toast from 'react-native-toast-message';
 
-registerTranslation('en-GB', enGB)
-
+registerTranslation("en", en);
 
 const theme = {
   ...DefaultTheme,

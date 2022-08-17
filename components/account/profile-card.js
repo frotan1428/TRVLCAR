@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { useStore } from "../../store";
 import {
@@ -11,24 +11,28 @@ import {
 } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../../utils/constants/colors";
+import { logout } from "../../store/user/userActions";
+import * as SecureStore from "expo-secure-store";
 
 const ProfileCard = () => {
   const { userState, dispatchUser } = useStore();
   const { user } = userState;
   const navigation = useNavigation();
 
-  const handleLogout = () => { 
-
-    /*
-        1. Alert.alert ile emin misiniz diye sorulacak
-        2. dispatch ile logout yap
-        3. Secure store u boşalt
-        4. navigate to home
-    */
-
-   }
-
-
+  const handleLogout =  () => {
+    Alert.alert("Warning", "Are you sure want to log out?", [
+      {
+        text:"NO"
+      },{
+        text:"YES",
+        onPress: async ()=>{
+          dispatchUser(logout());
+          await SecureStore.deleteItemAsync("token");
+          navigation.navigate("cars");
+        }
+      }
+    ])
+  };
 
   return (
     <Card>
@@ -81,6 +85,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 5,
     right: 5,
-    backgroundColor: colors.color5
+    backgroundColor: colors.color5,
   },
 });
